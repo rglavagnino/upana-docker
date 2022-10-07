@@ -1,0 +1,36 @@
+version: "3"
+services:
+  upana-lab:
+    container_name: upana-lab
+    hostname: upana-lab
+    build: .
+    # image: jupyter/datascience-notebook:python-3.10
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB="yes"
+    volumes:
+      - c:/lake/jupyter/work:/home/jovyan/work
+      - c:/lake/jupyter/work:/home/jovyan/work/datasets
+      - c:/lake/jupyter/work:/home/jovyan/work/modules
+      - c:/lake/jupyter/work:/etc/ssl/notebook
+    command:  "start-notebook.sh --NotebookApp.token=perro --NotebookApp.password=perro"
+    networks:
+      - datadac
+  upana-db:
+    container_name: upana-mongo
+    hostname: upana-mongo
+    image: mongo:6.0
+    ports:
+      - "8889:27017"
+    volumes:
+      - c:/lake/udata/mongodata:/data/db
+    environment:
+            - MONGO_INITDB_ROOT_USERNAME=admin
+            - MONGO_INITDB_ROOT_PASSWORD=lapicero2
+    networks:
+            - datadac
+
+networks:
+    datadac:
+        driver: bridge
